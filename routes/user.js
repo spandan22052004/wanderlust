@@ -33,14 +33,17 @@ router.get("/login",(req,res)=>{
     res.render("users/login.ejs");
 });
 
-router.post("/login",saveRedirectUrl,passport.authenticate("local",
-    {failureRedirect : '/login',
-    failureFlash:true}),
-    async(req,res)=>{
-     req.flash("success","Welcome back to wanderlust!");
-     let redirect = res.locals.saveRedirect || "/listings";
-     res.redirect(redirect);
+router.post("/login", saveRedirectUrl, passport.authenticate("local", {
+    failureRedirect: '/login',
+    failureFlash: true
+}), async (req, res) => {
+    req.flash("success", "Welcome back to wanderlust!");
+    let redirect = res.locals.saveRedirect || "/listings";
+    console.log("Redirecting to:", redirect);
+    delete req.session.redirectUrl; // Clear the session variable after using it
+    res.redirect(redirect);
 });
+
 
 router.get("/logout",(req,res,next)=>{
     req.logout((err)=>{

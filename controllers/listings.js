@@ -52,13 +52,24 @@ module.exports.editListing = async (req, res) => {
         req.flash("error", "The Listing you requested for does not exist!");
         return res.redirect("/listings");
     }
-    res.render("./listings/edit.ejs", { listing });
+
+    let originalImage = listing.image.url;
+    originalImage = originalImage.replace("/upload","/upload/h_200");
+
+
+    res.render("./listings/edit.ejs", { listing , originalImage });
 };
 module.exports.updateListing = async (req, res) => { 
     let { id } = req.params;
     const listingData = req.body.listing;
     const updatedListing = await Listing.findByIdAndUpdate(id, listingData, { new: true });
     console.log(updatedListing);
+    if(typeof req.file !== "undefined"){
+    let url = req.file.path;
+    let filename = req.file.filename;
+    updatedListing.image = {url,filename};
+    await updatedListing.save();
+    }
     req.flash("success", "Listing Updated!");
     res.redirect(`/listings/${id}`);
 };

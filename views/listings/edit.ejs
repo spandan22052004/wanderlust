@@ -14,10 +14,10 @@
       </style>
 </head>
 <body>
-    <div class="row">
+    <div class="row mt-10">
         <div class="col-8 offset-2">
-    <h3>Edit your listing :</h3>
-    <form method="POST"action="/listings/<%=listing._id%>?_method=PUT" novalidate class="needs-validation">
+    <h3 class="mt-3">Edit your listing :</h3>
+    <form method="POST"action="/listings/<%=listing._id%>?_method=PUT" novalidate class="needs-validation" enctype="multipart/form-data">
         <div class="mb-3">
             <label for="title" class="form-label">Title</label>
             <input type="text" name="listing[title]" value="<%=listing.title%>" class="form-control" required>
@@ -33,11 +33,12 @@
             </div>
         </div>
         <div class="mb-3">
-            <label for="image" class="form-label">Image-Link</label>
-            <input type="text" name="listing[image]" value="<%=listing.image%>" class="form-control" required>
-            <div class="invalid-feedback">
-                The image link must be valid.
-            </div>
+            Original Listing Image <br>
+          <img src="<%=originalImage%>">
+        </div>
+        <div class="mb-3">
+            <label for="image" class="form-label">Upload New Image</label>
+            <input type="file" id="image" name="listing[image]"class="form-control">
         </div>
     <div class="row">
         <div class="mb-3 col-md-4">
@@ -62,7 +63,7 @@
                 Location must be valid.
             </div>
         </div>
-         <button class="btn btn-dark edit-btn">Save</button>
+         <button class="btn btn-dark edit-btn mb-3">Save</button>
     </form>
 </div>
 </div>

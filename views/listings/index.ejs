@@ -68,3 +68,12 @@
     </div>
 </body>
 
+<script>
+  document.querySelectorAll('.filter').forEach(filter => {
+      filter.addEventListener('click', () => {
+          const filterType = filter.querySelector('p').innerText;
+          window.location.href = `/listings/filter/${filterType}`;
+      });
+  });
+</script>
+

@@ -1,28 +1,32 @@
 const Joi = require('joi');
 
 module.exports.listingSchema = Joi.object({
-    listing: Joi.object({
-        title: Joi.string().required().messages({
-            'string.empty': 'Title is required'
-        }),
-        description: Joi.string().required().messages({
-            'string.empty': 'Description is required'
-        }),
-        location: Joi.string().required().messages({
-            'string.empty': 'Location is required'
-        }),
-        country: Joi.string().required().messages({
-            'string.empty': 'Country is required'
-        }),
-        price: Joi.number().required().min(0).messages({
-            'number.base': 'The Price must be a number',
-            'number.min': 'The Price must be a positive number',
-            'any.required': 'Price is required'
-        }),
-        image: Joi.string().allow("", null).messages({
-            'string.empty': 'Image can be empty'
-        })
-    }).required()
+  listing: Joi.object({
+      title: Joi.string().required().messages({
+          'string.empty': 'Title is required'
+      }),
+      description: Joi.string().required().messages({
+          'string.empty': 'Description is required'
+      }),
+      location: Joi.string().required().messages({
+          'string.empty': 'Location is required'
+      }),
+      country: Joi.string().required().messages({
+          'string.empty': 'Country is required'
+      }),
+      price: Joi.number().required().min(0).messages({
+          'number.base': 'The Price must be a number',
+          'number.min': 'The Price must be a positive number',
+          'any.required': 'Price is required'
+      }),
+      image: Joi.string().allow("", null).messages({
+          'string.empty': 'Image can be empty'
+      }),
+      filter: Joi.string().valid('Trending', 'Castles', 'Beach', 'Boats', 'Islands', 'Deserts', 'Arctic').required().messages({
+          'any.only': 'Invalid filter selected',
+          'string.empty': 'Filter is required'
+      })
+  }).required()
 });
 
 

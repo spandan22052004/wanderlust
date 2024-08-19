@@ -50,6 +50,13 @@
         <p>Arctic</p>
       </div>
     </div>
+    <% if (noListings) { %>
+      <div class="text-center mt-5">
+        <h3>No listings available for "<%= filterType %>" 😢</h3>
+        <p>Try selecting a different filter or add a new listing!</p>
+        <a href="/listings">Back to Home page</a>
+      </div>
+    <% } else { %>
     <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-2">
     <%for(listing of allListing){%>
     <a href="/listings/<%=listing._id%>" class="listing-link">
@@ -66,6 +73,7 @@
     </a>
       <% } %>
     </div>
+  <%}%>
 </body>
 
 <script>

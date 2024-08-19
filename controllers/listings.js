@@ -56,7 +56,18 @@ module.exports.createListing = async (req, res, next) => {
     }
 };
 
+module.exports.filterListings = async (req, res) => {
+    const { filterType } = req.params;
+    const filteredListings = await Listing.find({ filter: filterType });
 
+    const noListings = filteredListings.length === 0;
+
+    res.render('./listings/index.ejs', { 
+        allListing: filteredListings, 
+        filterType, 
+        noListings 
+    });
+};
 
 module.exports.editListing = async (req, res) => { 
     let { id } = req.params;

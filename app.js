@@ -96,14 +96,6 @@ app.use("/listings",listingRouter);
 app.use("/listings/:id/reviews",reviewRouter);
 app.use("/",userRouter);
 
-
-
-app.get('/listings/filter/:filterType', async (req, res) => {
-    const filteredListings = await Listing.find({ filter: req.params.filterType });
-    res.render("./listings", { allListing: filteredListings });
-  });
-
-
 app.all("*",(req,res,next)=>{
     next( new ExpressError(404,"Page not found"));
 })

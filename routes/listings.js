@@ -16,6 +16,7 @@ router.route("/")
 .post(IsloggedIn,upload.single("listing[image]"),validateListing, wrapAsync(listingController.createListing));
 
 
+
 // New Route.........(3)
 router.get("/new", IsloggedIn, listingController.newListing);
 
@@ -30,6 +31,7 @@ router.route("/:id")
 router.get("/:id/edit", IsloggedIn,isOwner, wrapAsync(listingController.editListing));
 
 
+router.get("/filter/:filterType",IsloggedIn,wrapAsync(listingController.filterListings));
 
 
 

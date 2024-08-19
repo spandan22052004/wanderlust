@@ -50,7 +50,7 @@
         <p>Arctic</p>
       </div>
     </div>
-    <% if (noListings) { %>
+    <% if (allListing.length==0) { %>
       <div class="text-center mt-5">
         <h3>No listings available for "<%= filterType %>" 😢</h3>
         <p>Try selecting a different filter or add a new listing!</p>

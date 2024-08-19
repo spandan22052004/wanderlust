@@ -7,7 +7,12 @@ const sampleListings = [
       filename: "listing_image"
     },
     price: 1500,
-    location: "Malibu, United States"
+    location: "Malibu, United States",
+    country: "United States",
+    geometry: {
+      type: "Point",
+      coordinates: [-118.7798, 34.0259]
+    }
   },
   {
     title: "Modern Loft in Downtown",
@@ -17,7 +22,12 @@ const sampleListings = [
       filename: "listing_image"
     },
     price: 1200,
-    location: "New York City, United States"
+    location: "New York City, United States",
+    country: "United States",
+    geometry: {
+      type: "Point",
+      coordinates: [-74.0060, 40.7128]
+    }
   },
   {
     title: "Rustic Mountain Cabin",
@@ -27,7 +37,12 @@ const sampleListings = [
       filename: "listing_image"
     },
     price: 900,
-    location: "Aspen, United States"
+    location: "Aspen, United States",
+    country: "United States",
+    geometry: {
+      type: "Point",
+      coordinates: [-106.8370, 39.1911]
+    }
   },
   {
     title: "Luxury Villa with Private Pool",
@@ -37,7 +52,12 @@ const sampleListings = [
       filename: "listing_image"
     },
     price: 3000,
-    location: "Santorini, Greece"
+    location: "Santorini, Greece",
+    country: "Greece",
+    geometry: {
+      type: "Point",
+      coordinates: [25.4858, 36.3932]
+    }
   },
   {
     title: "Charming Countryside B&B",
@@ -47,7 +67,12 @@ const sampleListings = [
       filename: "listing_image"
     },
     price: 700,
-    location: "Tuscany, Italy"
+    location: "Tuscany, Italy",
+    country: "Italy",
+    geometry: {
+      type: "Point",
+      coordinates: [11.2558, 43.7696]
+    }
   }
 ];
 

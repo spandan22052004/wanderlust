@@ -1,145 +1,163 @@
 <% layout("./layouts/boilerplate") %>
 <style>
-  #filters{
-    display : flex;
+  /* Your existing styles */
+  #filters {
+    display: flex;
     flex-wrap: wrap;
     align-items: center;
   }
-  .filter{
+  .filter {
     text-align: center;
-    margin-right : 2rem;
-    margin-top:1rem;
-    opacity:0.7;
+    margin-right: 2rem;
+    margin-top: 1rem;
+    opacity: 0.7;
   }
-  .filter:hover{
-    opacity:1;
-    cursor:pointer;
+  .filter:hover {
+    opacity: 1;
+    cursor: pointer;
   }
-  .tax-info{
-    display:none;
+  .tax-info {
+    display: none;
   }
-  .toggle-switch{
-    border:1px solid black;
-    border-radius:1rem;
-    height:3.25rem;
-    padding:1rem;
-    display:flex;
+  .toggle-switch {
+    border: 1px solid black;
+    border-radius: 1rem;
+    height: 3.25rem;
+    padding: 1rem;
+    display: flex;
     align-items: center;
-    margin-left:25rem;
+    margin-left: 25rem;
   }
 </style>
 <body>
-    <!-- <h3>All Listings</h3> -->
-    <!-- <form method="GET" action="/listings/new">
-        <button>Add New Listing</button>
-    </form> -->
+    <!-- Filters Section -->
     <div id="filters">
-      <div class="filter">
-        <div><i class="fa-solid fa-fire"></i></div>
-        <p>Trending</p>
-      </div>
-      <div class="filter">
-        <div><i class="fa-solid fa-chess-rook"></i></div>
-        <p>Castles</p>
-      </div>
-      <div class="filter">
-        <div><i class="fa-solid fa-umbrella-beach"></i></div>
-        <p>Beach</p>
-      </div>
-      <div class="filter">
-        <div><i class="fa-solid fa-ship"></i></div>
-        <p>Boats</p>
-      </div>
-      <div class="filter">
-        <div><i class="fa-solid fa-mountain-sun"></i></div>
-        <p>Islands</p>
-      </div>
-      <div class="filter">
-        <div><i class="fa-solid fa-temperature-three-quarters"></i></div>
-        <p>Deserts</p>
-      </div>
-      <div class="filter">
-        <div><i class="fa-solid fa-snowflake"></i></div>
-        <p>Arctic</p>
-      </div>
-      <div class="toggle-switch">
-        <div class="form-check-reverse form-switch">
-          <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
-          <label class="form-check-label" for="flexSwitchCheckDefault">Display total After taxes</label>
+        <!-- Your existing filter code -->
+        <div class="filter">
+            <div><i class="fa-solid fa-fire"></i></div>
+            <p>Trending</p>
         </div>
-      </div>
+        <div class="filter">
+            <div><i class="fa-solid fa-chess-rook"></i></div>
+            <p>Castles</p>
+        </div>
+        <div class="filter">
+            <div><i class="fa-solid fa-umbrella-beach"></i></div>
+            <p>Beach</p>
+        </div>
+        <div class="filter">
+            <div><i class="fa-solid fa-ship"></i></div>
+            <p>Boats</p>
+        </div>
+        <div class="filter">
+            <div><i class="fa-solid fa-mountain-sun"></i></div>
+            <p>Islands</p>
+        </div>
+        <div class="filter">
+            <div><i class="fa-solid fa-temperature-three-quarters"></i></div>
+            <p>Deserts</p>
+        </div>
+        <div class="filter">
+            <div><i class="fa-solid fa-snowflake"></i></div>
+            <p>Arctic</p>
+        </div>
+        <div class="toggle-switch">
+            <div class="form-check-reverse form-switch">
+                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                <label class="form-check-label" for="flexSwitchCheckDefault">Display total After taxes</label>
+            </div>
+        </div>
     </div>
-    <% if (allListing.length==0) { %>
-      <div class="text-center mt-5">
-        <h3>No listings available for "<%= filterType %>" 😢</h3>
-        <p>Try selecting a different filter or add a new listing!</p>
-        <a href="/listings">Back to Home page</a>
-      </div>
-    <% } else { %>
-    <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-2">
-    <%for(listing of allListing){%>
-    <a href="/listings/<%=listing._id%>" class="listing-link">
-    <div class="card col listing-card">
-        <img src="<%= listing.image.url %>" class="card-img-top" alt="listing_image" style="height: 20rem;">
-        <div class="card-img-overlay">
-          <i class="fa-solid fa-heart wishlist-icon <%= listing.isWishlisted ? 'text-danger' : '' %>" 
-             data-id="<%= listing._id %>"></i>
+
+    <!-- Search Results Section -->
+    <% if (typeof listings !== 'undefined') { %>
+        <h1>Search Results for "<%= query %>"</h1>
+
+        <% if (listings.length > 0) { %>
+            <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-2">
+                <% listings.forEach(listing => { %>
+                    <a href="/listings/<%=listing._id%>" class="listing-link">
+                        <div class="card col listing-card">
+                            <img src="<%= listing.image.url %>" class="card-img-top" alt="listing_image" style="height: 20rem;">
+                            <div class="card-img-overlay">
+                                <i class="fa-solid fa-heart wishlist-icon <%= listing.isWishlisted ? 'text-danger' : '' %>" data-id="<%= listing._id %>"></i>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">
+                                    <b><%=listing.title%></b> <br>
+                                    &#8377;<%=listing.price.toLocaleString('en-IN')%>/night
+                                    <i class="tax-info"> &nbsp; &nbsp;+ 18% GST</i>
+                                </p>
+                            </div>
+                        </div>
+                    </a>
+                <% }) %>
+            </div>
+        <% } else { %>
+            <div class="text-center mt-5">
+                <h3>No results found for "<%= query %>" 😢</h3>
+                <p>Try searching with a different keyword or browse all listings.</p>
+                <a href="/listings">Back to Home page</a>
+            </div>
+        <% } %>
+    <% } %>
+
+    <!-- Listings Section -->
+    <% if (typeof allListing !== 'undefined' && allListing.length == 0) { %>
+        <div class="text-center mt-5">
+            <% if (typeof filterType !== 'undefined') { %>
+                <h3>No listings available for "<%= filterType %>" 😢</h3>
+            <% } else { %>
+                <h3>No listings available 😢</h3>
+            <% } %>
+            <p>Try selecting a different filter or add a new listing!</p>
+            <a href="/listings">Back to Home page</a>
         </div>
-        <div class="card-body">
-          <p class="card-text">
-            <b><%=listing.title%></b> <br>
-            &#8377;<%=listing.price.toLocaleString('en-IN')%>/night
-            <i class="tax-info"> &nbsp; &nbsp;+ 18% GST</i>
-          </p>
+    <% } else if (typeof allListing !== 'undefined' && allListing.length > 0) { %>
+        <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-2">
+            <% allListing.forEach(listing => { %>
+                <a href="/listings/<%=listing._id%>" class="listing-link">
+                    <div class="card col listing-card">
+                        <img src="<%= listing.image.url %>" class="card-img-top" alt="listing_image" style="height: 20rem;">
+                        <div class="card-img-overlay">
+                            <i class="fa-solid fa-heart wishlist-icon <%= listing.isWishlisted ? 'text-danger' : '' %>" data-id="<%= listing._id %>"></i>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">
+                                <b><%=listing.title%></b> <br>
+                                &#8377;<%=listing.price.toLocaleString('en-IN')%>/night
+                                <i class="tax-info"> &nbsp; &nbsp;+ 18% GST</i>
+                            </p>
+                        </div>
+                    </div>
+                </a>
+            <% }) %>
         </div>
-      </div>
-    </a>
-      <% } %>
-    </div>
-  <%}%>
+    <% } %>
 </body>
 
 <script>
+  // Existing filter click event
   document.querySelectorAll('.filter').forEach(filter => {
       filter.addEventListener('click', () => {
           const filterType = filter.querySelector('p').innerText;
           window.location.href = `/listings/filter/${filterType}`;
       });
   });
+
+  // Tax info toggle switch
   let taxSwitch = document.getElementById("flexSwitchCheckDefault");
-  taxSwitch.addEventListener("click",()=>{
-    let taxInfo = document.getElementsByClassName("tax-info");
-    let textoftheSwitch = document.getElementsByClassName("form-check-label")[0];
-    for(info of taxInfo){
-      if(info.style.display != "inline"){
-        info.style.display ="inline";
-        textoftheSwitch.innerText = "Display Total before taxes";
-        
-      }else{
-        info.style.display="none";
-        textoftheSwitch.innerText = "Display Total after taxes";
+  taxSwitch.addEventListener("click", () => {
+      let taxInfo = document.getElementsByClassName("tax-info");
+      let textoftheSwitch = document.getElementsByClassName("form-check-label")[0];
+      for (info of taxInfo) {
+          if (info.style.display != "inline") {
+              info.style.display = "inline";
+              textoftheSwitch.innerText = "Display Total before taxes";
+          } else {
+              info.style.display = "none";
+              textoftheSwitch.innerText = "Display Total after taxes";
+          }
       }
-    }
-  })
-  // document.querySelectorAll('.wishlist-icon').forEach(icon => {
-  //     icon.addEventListener('click', async (e) => {
-  //         const listingId = e.target.dataset.id;
-  //         const isWishlisted = e.target.classList.contains('text-danger');
-          
-  //         try {
-  //             const response = await fetch(`/listings/${listingId}/wishlist`, {
-  //                 method: 'POST',
-  //                 headers: { 'Content-Type': 'application/json' },
-  //                 body: JSON.stringify({ isWishlisted: !isWishlisted })
-  //             });
-
-  //             if (response.ok) {
-  //                 e.target.classList.toggle('text-danger');
-  //             }
-  //         } catch (error) {
-  //             console.error('Error toggling wishlist:', error);
-  //         }
-  //     });
-  // });
+  });
 </script>
-

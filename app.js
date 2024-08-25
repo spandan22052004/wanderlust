@@ -23,6 +23,7 @@ const LocalStrategy  = require("passport-local");
 const listingRouter = require("./routes/listings.js");
 const reviewRouter = require("./routes/review.js")
 const userRouter = require("./routes/user.js");
+const searchRouter = require("./routes/search.js");
 
 const app = express();
 const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
@@ -91,10 +92,11 @@ app.use((req,res,next)=>{
 //  let registerdUser = await User.register(fakeUser,"helloworld");
 //  res.send(registerdUser);
 // })
-
+app.use("/listings",searchRouter);
 app.use("/listings",listingRouter);
 app.use("/listings/:id/reviews",reviewRouter);
 app.use("/",userRouter);
+
 
 app.all("*",(req,res,next)=>{
     next( new ExpressError(404,"Page not found"));

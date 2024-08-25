@@ -20,8 +20,7 @@ router.get('/search', async (req, res) => {
 
         const listings = await Listing.find(searchCriteria);
 
-        // Define filterType here if needed
-        const filterType = query; // or some default value
+        const filterType = query;
 
         res.render("./listings/index", { listings, query, allListing: [], filterType });
     } catch (err) {
@@ -29,3 +28,4 @@ router.get('/search', async (req, res) => {
         res.status(500).send('Server Error');
     }
 });
+module.exports = router;

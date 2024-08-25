@@ -60,12 +60,9 @@ module.exports.filterListings = async (req, res) => {
     const { filterType } = req.params;
     const filteredListings = await Listing.find({ filter: filterType });
 
-    const noListings = filteredListings.length === 0;
-
     res.render('./listings/index.ejs', { 
         allListing: filteredListings, 
-        filterType, 
-        noListings 
+        filterType
     });
 };
 

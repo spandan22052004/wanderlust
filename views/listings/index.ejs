@@ -3,6 +3,7 @@
   #filters{
     display : flex;
     flex-wrap: wrap;
+    align-items: center;
   }
   .filter{
     text-align: center;
@@ -13,6 +14,18 @@
   .filter:hover{
     opacity:1;
     cursor:pointer;
+  }
+  .tax-info{
+    display:none;
+  }
+  .toggle-switch{
+    border:1px solid black;
+    border-radius:1rem;
+    height:3.25rem;
+    padding:1rem;
+    display:flex;
+    align-items: center;
+    margin-left:25rem;
   }
 </style>
 <body>
@@ -49,6 +62,12 @@
         <div><i class="fa-solid fa-snowflake"></i></div>
         <p>Arctic</p>
       </div>
+      <div class="toggle-switch">
+        <div class="form-check-reverse form-switch">
+          <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+          <label class="form-check-label" for="flexSwitchCheckDefault">Display total After taxes</label>
+        </div>
+      </div>
     </div>
     <% if (allListing.length==0) { %>
       <div class="text-center mt-5">
@@ -62,11 +81,15 @@
     <a href="/listings/<%=listing._id%>" class="listing-link">
     <div class="card col listing-card">
         <img src="<%= listing.image.url %>" class="card-img-top" alt="listing_image" style="height: 20rem;">
-        <div class="card-img-overlay">abcd</div>
+        <div class="card-img-overlay">
+          <i class="fa-solid fa-heart wishlist-icon <%= listing.isWishlisted ? 'text-danger' : '' %>" 
+             data-id="<%= listing._id %>"></i>
+        </div>
         <div class="card-body">
           <p class="card-text">
             <b><%=listing.title%></b> <br>
             &#8377;<%=listing.price.toLocaleString('en-IN')%>/night
+            <i class="tax-info"> &nbsp; &nbsp;+ 18% GST</i>
           </p>
         </div>
       </div>
@@ -83,5 +106,40 @@
           window.location.href = `/listings/filter/${filterType}`;
       });
   });
+  let taxSwitch = document.getElementById("flexSwitchCheckDefault");
+  taxSwitch.addEventListener("click",()=>{
+    let taxInfo = document.getElementsByClassName("tax-info");
+    let textoftheSwitch = document.getElementsByClassName("form-check-label")[0];
+    for(info of taxInfo){
+      if(info.style.display != "inline"){
+        info.style.display ="inline";
+        textoftheSwitch.innerText = "Display Total before taxes";
+        
+      }else{
+        info.style.display="none";
+        textoftheSwitch.innerText = "Display Total after taxes";
+      }
+    }
+  })
+  // document.querySelectorAll('.wishlist-icon').forEach(icon => {
+  //     icon.addEventListener('click', async (e) => {
+  //         const listingId = e.target.dataset.id;
+  //         const isWishlisted = e.target.classList.contains('text-danger');
+          
+  //         try {
+  //             const response = await fetch(`/listings/${listingId}/wishlist`, {
+  //                 method: 'POST',
+  //                 headers: { 'Content-Type': 'application/json' },
+  //                 body: JSON.stringify({ isWishlisted: !isWishlisted })
+  //             });
+
+  //             if (response.ok) {
+  //                 e.target.classList.toggle('text-danger');
+  //             }
+  //         } catch (error) {
+  //             console.error('Error toggling wishlist:', error);
+  //         }
+  //     });
+  // });
 </script>
 

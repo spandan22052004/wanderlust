@@ -1,0 +1,71 @@
+<% layout("./layouts/boilerplate") %>
+<style>
+    .card {
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.card.fade-out {
+    transform: scale(0.9);
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.card.fade-out.hidden {
+    display: none;
+}
+</style>
+<body>
+    <div class="container mt-4">
+      <h2>Your Wishlist</h2>
+      <% if (wishlist.length > 0) { %>
+        <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-2">
+          <% wishlist.forEach(listing => { %>
+            <div class="col mb-4">
+              <div class="card listing-card">
+                <img src="<%= listing.image.url %>" class="card-img-top" alt="listing_image" style="height: 20rem;">
+                <div class="card-body">
+                  <p class="card-text">
+                    <b><%= listing.title %></b> <br>
+                    &#8377;<%= listing.price.toLocaleString('en-IN') %>/night
+                  </p>
+                  <!-- Button to remove listing from wishlist -->
+                  <form method="POST" action="/wishlist/<%= listing._id %>?_method=DELETE" style="display: inline;">
+                    <button type="submit" class="btn btn-danger">Remove from Wishlist</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      <% } else { %>
+        <div class="text-center mt-5">
+          <h3>Your wishlist is empty 😢</h3>
+          <p>Explore listings and add some to your wishlist!</p>
+          <a href="/listings" class="btn btn-primary">Browse Listings</a>
+        </div>
+      <% } %>
+    </div>
+    
+    <!-- Include the script for animations -->
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const deleteForms = document.querySelectorAll('form[method="POST"]');
+    
+        deleteForms.forEach(form => {
+            form.addEventListener('submit', (event) => {
+                event.preventDefault();
+    
+                const card = event.target.closest('.card');
+                card.classList.add('fade-out');
+    
+                // Delay to allow animation to complete before submitting the form
+                setTimeout(() => {
+                    event.target.submit();
+                }, 300); // Match the duration of the animation
+            });
+        });
+    });
+    </script>
+  </body>

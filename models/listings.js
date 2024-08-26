@@ -38,7 +38,8 @@ const listingSchema = new Schema({
   },
   filter: {
     type: String,
-    enum: ['Trending', 'Castles', 'Beach', 'Boats', 'Islands', 'Deserts', 'Arctic'],
+    default:'Trending',
+    enum: ['Trending', 'Castles', 'Beach', 'Boats', 'Islands', 'Deserts', 'Arctic', 'Urban', 'Forest', 'Cabins', 'Lakes', 'Spa', 'Hiking', 'Camping', 'Igloos', 'Luxury', 'Glamping'],
     required: true, 
   },
 });

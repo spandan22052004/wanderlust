@@ -83,17 +83,40 @@ module.exports.editListing = async (req, res) => {
 module.exports.updateListing = async (req, res) => { 
     let { id } = req.params;
     const listingData = req.body.listing;
-    const updatedListing = await Listing.findByIdAndUpdate(id, listingData, { new: true });
-    console.log(updatedListing);
-    if(typeof req.file !== "undefined"){
-    let url = req.file.path;
-    let filename = req.file.filename;
-    updatedListing.image = {url,filename};
-    await updatedListing.save();
+
+    // Fetch the existing listing from the database
+    const existingListing = await Listing.findById(id);
+
+    // Check if the location has changed
+    if (listingData.location && listingData.location !== existingListing.location) {
+        // Re-fetch the geocoded data for the new location
+        let response = await geocodingClient.forwardGeocode({
+            query: listingData.location,
+            limit: 2
+        }).send();
+
+        // Update the geometry field with the new geocoded data
+        listingData.geometry = response.body.features[0].geometry;
+    } else {
+        // If location hasn't changed, keep the existing geometry
+        listingData.geometry = existingListing.geometry;
     }
+
+    // Update the listing with new data
+    const updatedListing = await Listing.findByIdAndUpdate(id, listingData, { new: true });
+
+    // If a new image is uploaded, update the image field
+    if (typeof req.file !== "undefined") {
+        let url = req.file.path;
+        let filename = req.file.filename;
+        updatedListing.image = { url, filename };
+        await updatedListing.save();
+    }
+
     req.flash("success", "Listing Updated!");
     res.redirect(`/listings/${id}`);
 };
+
 module.exports.destroyListing = async (req, res) => { 
     let { id } = req.params;
     const deletedListing = await Listing.findByIdAndDelete(id);
@@ -101,3 +124,4 @@ module.exports.destroyListing = async (req, res) => {
     req.flash("success", "Listing Deleted!");
     res.redirect("/listings");
 };
+

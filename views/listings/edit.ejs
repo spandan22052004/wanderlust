@@ -40,6 +40,31 @@
             <label for="image" class="form-label">Upload New Image</label>
             <input type="file" id="image" name="listing[image]"class="form-control">
         </div>
+        <div class="mb-3">
+            <label for="filters" class="form-label">Selected Filter</label>
+            <select id="filters" name="listing[filter]" class="form-select" disabled>
+                <option value="Trending" <% if (listing.filter === 'Trending') { %> selected <% } %>>Trending</option>
+                <option value="Castles" <% if (listing.filter === 'Castles') { %> selected <% } %>>Castles</option>
+                <option value="Beach" <% if (listing.filter === 'Beach') { %> selected <% } %>>Beach</option>
+                <option value="Boats" <% if (listing.filter === 'Boats') { %> selected <% } %>>Boats</option>
+                <option value="Islands" <% if (listing.filter === 'Islands') { %> selected <% } %>>Islands</option>
+                <option value="Deserts" <% if (listing.filter === 'Deserts') { %> selected <% } %>>Deserts</option>
+                <option value="Arctic" <% if (listing.filter === 'Arctic') { %> selected <% } %>>Arctic</option>
+                <option value="Urban" <% if (listing.filter === 'Urban') { %> selected <% } %>>Urban</option>
+                <option value="Forest" <% if (listing.filter === 'Forest') { %> selected <% } %>>Forest</option>
+                <option value="Cabins" <% if (listing.filter === 'Cabins') { %> selected <% } %>>Cabins</option>
+                <option value="Lakes" <% if (listing.filter === 'Lakes') { %> selected <% } %>>Lakes</option>
+                <option value="Spa" <% if (listing.filter === 'Spa') { %> selected <% } %>>Spa</option>
+                <option value="Hiking" <% if (listing.filter === 'Hiking') { %> selected <% } %>>Hiking</option>
+                <option value="Camping" <% if (listing.filter === 'Camping') { %> selected <% } %>>Camping</option>
+                <option value="Igloos" <% if (listing.filter === 'Igloos') { %> selected <% } %>>Igloos</option>
+                <option value="Luxury" <% if (listing.filter === 'Luxury') { %> selected <% } %>>Luxury</option>
+                <option value="Glamping" <% if (listing.filter === 'Glamping') { %> selected <% } %>>Glamping</option>
+            </select>
+            <!-- Hidden input to pass the filter value -->
+            <input type="hidden" name="listing[filter]" value="<%= listing.filter %>">
+        </div>
+         
     <div class="row">
         <div class="mb-3 col-md-4">
             <label for="price" class="form-label">Price</label>

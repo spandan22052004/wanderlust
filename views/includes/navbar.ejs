@@ -1,55 +1,120 @@
 <style>
-  .search_button{
+  /* Styling for the search button */
+  .search_button {
     background-color: #fe424d;
     color: white;
-    border:none;
+    border: none;
     border-radius: 25px;
-    padding:0 1rem 0 1rem;
+    padding: 0 1rem;
   }
-  .search_button:hover{
+
+  .search_button:hover {
     background-color: #fe424d;
     color: white;
   }
-  .search_button i{
-    display:inline;
-    margin-right:0.5rem;
+
+  .search_button i {
+    display: inline;
+    margin-right: 0.5rem;
   }
-  .search-input{
+
+  /* Styling for the search input field */
+  .search-input {
     border-radius: 25px;
-    padding:0.5rem 4rem 0.5rem 4rem;
+    padding: 0.5rem 4rem;
   }
-  img{
-    mix-blend-mode: multiply;
+
+  /* Ensure the navbar has a light background on small screens */
+  .navbar-collapse {
+    background-color: white;
+    /* White background for the collapsed menu */
   }
+
+  /* Adjusting the background of the navbar toggler button */
+  .navbar-toggler {
+    border: none;
+    background-color: white;
+    /* White background for the hamburger icon container */
+  }
+  /* Basic styling for the invite wanderers link */
+.invite-wanderers {
+  background-color: #fe424d; /* Background color for the button */
+  color: white !important; /* Text color */
+  padding: 0.5rem 1rem; /* Padding inside the button */
+  border-radius: 25px; /* Rounded corners */
+  font-weight: bold; /* Bold text */
+  text-align: center; /* Center the text */
+  transition: background-color 0.3s, color 0.3s; /* Smooth transition for hover effects */
+}
+
+/* Hover effect for the invite wanderers link */
+.invite-wanderers:hover {
+  background-color: #d43f4c; /* Darker background on hover */
+  color: #fff; /* Ensure text color remains white on hover */
+}
+
+.nav-link i.fas.fa-heart {
+    color: red;
+    font-size: 1.5em;
+    margin-right: 5px;
+}
+
+.nav-link:hover i.fas.fa-heart {
+    color: darkred;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .invite-wanderers {
+    display: block; /* Ensure it displays well on smaller screens */
+    margin-bottom: 1rem;
+    margin-top:1rem; /* Add margin for spacing */
+    text-align: center; /* Center the text on mobile */
+    width: 100%; /* Make the button full-width on small screens */
+  }
+}
 </style>
+
 <nav class="navbar navbar-expand-md bg-body-light border-bottom sticky-top">
   <div class="container-fluid">
+    <!-- Logo or brand image -->
     <a class="navbar-brand" href="/listings">
-      <img src="../image/logo.png" alt="logo_img" style="width: 4rem; height:4rem;">
-  </a>  
+      <img src="/image/logo.png" alt="icon" style="width: 4rem; height:4rem;">
+    </a>  
+
+    <!-- Hamburger menu button for small screens -->
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup">
       <span class="navbar-toggler-icon"></span>
     </button>
+
+    <!-- Collapsible part of the navbar -->
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <!-- Navbar links -->
       <div class="navbar-nav">
         <a class="nav-link" href="/listings">Explore</a>
+        <a class="nav-link invite-wanderers" href="/listings/new">Invite Wanderers</a>
       </div>
+      <!-- Search bar aligned to the right -->
       <div class="search-btn ms-auto">
         <form class="d-flex" role="search" action="/listings/search" method="get">
-            <input class="form-control me-2 search-input" id="search-query" name="q" type="search" placeholder="Search Destinations" aria-label="Search">
-            <button class="btn search_button" type="submit"><i class="fa-solid fa-magnifying-glass"></i>Search</button>
+          <input class="form-control me-2 search-input" id="search-query" name="q" type="search" placeholder="Search Destinations" aria-label="Search">
+          <button class="btn search_button" type="submit"><i class="fa-solid fa-magnifying-glass"></i>Search</button>
         </form>
-    </div>      
+      </div>      
+
+      <!-- User-related links aligned to the right -->
       <div class="navbar-nav ms-auto">
-        <a class="nav-link" href="/listings/new">Invite Wanderers</a>
-       <% if(!currUser){%>
-          <a class="nav-link active" aria-current="page" href="/signup"><b>Signup</b></a>
-          <a class="nav-link" href="/login"><b>Login</b></a>
-        <%}%>
-        <% if(currUser){%>
-        <a class="nav-link" href="/logout"><b>Logout</b></a>
-        <%}%>
-      </div>
+        <% if(!currUser) { %>
+            <a class="nav-link active" aria-current="page" href="/signup"><b>Signup</b></a>
+            <a class="nav-link" href="/login"><b>Login</b></a>
+        <% } %>
+        <% if(currUser) { %>
+          <a class="nav-link" href="/wishlist">
+            <i class="fas fa-heart"></i> Wishlist
+        </a>
+            <a class="nav-link" href="/logout"><b>Logout</b></a>
+        <% } %>
+    </div>    
     </div>
   </div>
 </nav>

@@ -22,10 +22,14 @@ module.exports.listingSchema = Joi.object({
       image: Joi.string().allow("", null).messages({
           'string.empty': 'Image can be empty'
       }),
-      filter: Joi.string().valid('Trending', 'Castles', 'Beach', 'Boats', 'Islands', 'Deserts', 'Arctic').required().messages({
-          'any.only': 'Invalid filter selected',
-          'string.empty': 'Filter is required'
-      })
+      filter: Joi.string().valid(
+        'Trending', 'Castles', 'Beach', 'Boats', 'Islands', 'Deserts', 'Arctic',
+        'Urban', 'Forest', 'Cabins', 'Lakes', 'Spa', 'Hiking', 'Camping', 'Igloos',
+        'Luxury', 'Glamping'
+    ).required().messages({
+        'any.only': 'Invalid filter selected',
+        'string.empty': 'Filter is required'
+    })    
   }).required()
 });
 

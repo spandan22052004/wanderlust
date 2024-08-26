@@ -1,5 +1,5 @@
 const User = require("../models/users")
-
+const Listing = require("../models/listings");
 module.exports.signupFormRender = (req,res)=>{
     res.render("users/signup.ejs");
 };
@@ -42,4 +42,57 @@ module.exports.destroyUser = (req,res,next)=>{
         req.flash("success","You are logged out!");
         res.redirect("/listings");
     })
+};
+//Wishlist
+module.exports.showWishlist = async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id).populate('wishlist');
+        res.render("./users/wishlist.ejs", { wishlist: user.wishlist });
+    } catch (err) {
+        console.error(err);
+        res.redirect('/listings');
+    }
+};
+
+
+module.exports.Addwishlist = async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id);
+        const listing = await Listing.findById(req.params.listingId);
+
+        if (user && listing) {
+            // Check if the listing is already in the wishlist
+            if (!user.wishlist.includes(listing._id)) {
+                user.wishlist.push(listing._id);
+                await user.save();
+                res.status(200).json({ message: "Listing added to wishlist" });
+            } else {
+                res.status(400).json({ message: "Listing is already in wishlist" });
+            }
+        } else {
+            res.status(404).json({ message: "User or Listing not found" });
+        }
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error });
+    }
+};
+
+module.exports.destroyWishlist = async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id);
+        const listing = await Listing.findById(req.params.listingId);
+
+        if (user && listing) {
+            user.wishlist = user.wishlist.filter(
+                (id) => id.toString() !== req.params.listingId
+            );
+            await user.save();
+            // Redirect to the wishlist page
+            res.redirect(`/wishlist/${req.user._id}`);
+        } else {
+            res.status(404).json({ message: "User or Listing not found" });
+        }
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error });
+    }
 };

@@ -99,6 +99,15 @@ app.use("/listings/:id/reviews",reviewRouter);
 app.use("/",userRouter);
 
 
+app.get("/privacy",(req,res)=>{
+    res.render("includes/privacy.ejs");
+});
+app.get("/terms",(req,res)=>{
+    res.render("includes/terms.ejs");
+});
+
+
+
 app.all("*",(req,res,next)=>{
     next( new ExpressError(404,"Page not found"));
 })

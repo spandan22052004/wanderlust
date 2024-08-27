@@ -1,33 +1,32 @@
 <% layout("./layouts/boilerplate") %>
 
-    <head>
-        <style>
-            /* Custom CSS */
-            .add-btn {
-                background-color: #fe424d;
-                color: white;
-                border: none;
-            }
+<head>
+    <style>
+        /* Custom CSS */
+        .add-btn {
+            background-color: #fe424d;
+            color: white;
+            border: none;
+        }
 
-            .new-listing {
-                color: #fe424d;
-            }
-        </style>
-    </head>
+        .new-listing {
+            color: #fe424d;
+        }
+    </style>
+</head>
 
-    <body>
-        <br><br>
-        <div class="row">
-            <div class="col-8 offset-2">
-                <h3 class="new-listing">Create the listing</h3>
-                <form method="POST" action="/listings" novalidate class="needs-validation"
-                    enctype="multipart/form-data">
+<body>
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-10 col-lg-8">
+                <h3 class="new-listing text-center mb-4">Create the Listing</h3>
+                <form method="POST" action="/listings" novalidate class="needs-validation" enctype="multipart/form-data">
                     <div class="mb-3">
                         <label for="title" class="form-label">Title</label>
                         <input type="text" id="title" name="listing[title]" placeholder="Enter a Catchy Title"
                             class="form-control" required>
                         <div class="valid-feedback">
-                            Look's Good
+                            Looks Good
                         </div>
                         <div class="invalid-feedback">
                             Please enter a valid title.
@@ -38,7 +37,7 @@
                         <textarea id="description" name="listing[description]" placeholder="Enter a Brief Description"
                             class="form-control" required></textarea>
                         <div class="valid-feedback">
-                            Look's Good
+                            Looks Good
                         </div>
                         <div class="invalid-feedback">
                             Please enter a valid description.
@@ -49,7 +48,7 @@
                         <input type="file" id="image" name="listing[image]" class="form-control" required>
                     </div>
                     <div class="mb-3">
-                        <label for="filters" class="form-label">Choose a filter</label>
+                        <label for="filters" class="form-label">Choose a Filter</label>
                         <select id="filters" name="listing[filter]" class="form-select">
                             <option value="Trending">Trending</option>
                             <option value="Castles">Castles</option>
@@ -68,26 +67,27 @@
                             <option value="Igloos">Igloos</option>
                             <option value="Luxury">Luxury</option>
                             <option value="Glamping">Glamping</option>
+                            <option value="Modern">Modern</option>
                         </select>
                     </div>
                     <div class="row">
-                        <div class="mb-3 col-md-4">
+                        <div class="mb-3 col-12 col-md-6">
                             <label for="price" class="form-label">Price</label>
                             <input type="number" id="price" name="listing[price]" placeholder="1,200"
                                 class="form-control" required>
                             <div class="valid-feedback">
-                                Look's Good
+                                Looks Good
                             </div>
                             <div class="invalid-feedback">
                                 Price should be valid.
                             </div>
                         </div>
-                        <div class="mb-3 col-md-8">
+                        <div class="mb-3 col-12 col-md-6">
                             <label for="country" class="form-label">Country</label>
                             <input type="text" id="country" name="listing[country]" placeholder="India"
                                 class="form-control" required>
                             <div class="valid-feedback">
-                                Look's Good
+                                Looks Good
                             </div>
                             <div class="invalid-feedback">
                                 Please enter a valid Country name.
@@ -99,15 +99,16 @@
                         <input type="text" id="location" name="listing[location]" placeholder="Hooghly, West Bengal"
                             class="form-control" required>
                         <div class="valid-feedback">
-                            Look's Good
+                            Looks Good
                         </div>
                         <div class="invalid-feedback">
                             Location must be valid.
                         </div>
                     </div>
-
-                    <button class="btn btn-dark add-btn">Add</button><br><br>
+                    <button class="btn btn-dark add-btn w-100">Add</button>
+                    <br><br>
                 </form>
             </div>
         </div>
-    </body>
+    </div>
+</body>

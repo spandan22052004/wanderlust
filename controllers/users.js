@@ -88,7 +88,7 @@ module.exports.destroyWishlist = async (req, res) => {
             );
             await user.save();
             // Redirect to the wishlist page
-            res.redirect(`/wishlist/${req.user._id}`);
+            res.redirect("/wishlist");
         } else {
             res.status(404).json({ message: "User or Listing not found" });
         }

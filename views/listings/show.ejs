@@ -5,25 +5,32 @@
 </script>
 <head>
     <style>
-    .show-img {
+      .show-img {
         height: 30vh;
         object-fit: cover; /* Ensure image covers the area without distortion */
       }
-    
+
       .edit-btn {
-        background-color: #fe424d;
-        color: white;
-        border: none;
+        background-color: #fe424d; /* Custom color */
+        color: white; /* Text color */
+        border: none; /* Remove border */
+        border-radius: 8px; /* Rounded corners */
+        width:4rem;
+        margin-right: 6rem;
       }
-    
+
+      .edit-btn:hover {
+        background-color: #e03a4a; /* Slightly darker color on hover */
+      }
+
       .listing-card {
         margin-bottom: 20px;
       }
-    
+
       .btn-block {
         width: 100%;
       }
-    
+
       /* Media Queries */
       @media (max-width: 768px) {
         .show-img {
@@ -39,11 +46,12 @@
         }
         
         .btns {
+          width: 50%;
           display: flex;
-          flex-direction: column;
+          justify-content: space-between;
           align-items: center; /* Center buttons */
         }
-        
+
         .btn-block {
           margin-top: 10px;
         }
@@ -58,7 +66,7 @@
           font-size: 1.2rem; /* Increase star size on mobile */
         }
       }
-    
+
       @media (max-width: 576px) {
         .show-img {
           height: 20vh; /* Further reduce image height on very small screens */
@@ -76,7 +84,7 @@
           height: 25vh; /* Further reduce map height on very small screens */
         }
       }
-    
+
       /* Prevent horizontal scrolling */
       body {
         overflow-x: hidden;
@@ -95,25 +103,29 @@
         <img src="<%=listing.image.url%>" class="card-img-top show-img" alt="listing_image">
         <div class="card-body">
           <p class="card-text">Owned by <i><%=listing.owner.username%></i></p>
-          <p class="card-text"> <%=listing.description%> </p>
+          <p class="card-text"><%=listing.description%></p>
           <p class="card-text"><%=listing.price.toLocaleString('en-IN')%>/night</p>
-          <p class="card-text"></p><%=listing.location%> ,<%=listing.country%></p>
+          <p class="card-text"><%=listing.location%>, <%=listing.country%></p>
         </div>
       </div>
     </div>
-    <%if(currUser && listing.owner._id.equals(currUser._id)){%>
+    <% if (currUser && listing.owner._id.equals(currUser._id)) { %>
     <div class="btns col-8 offset-3"> 
-      <form method="GET" action="/listings/<%=listing._id%>/edit">
-        <button class="btn btn-dark edit-btn">Edit</button>             
-      </form> 
-      <form method="POST" action="/listings/<%=listing._id%>?_method=DELETE">
-        <button class="btn btn-dark btn-block offset-10">Delete</button> 
-      </form> 
+      <div>
+        <form method="GET" action="/listings/<%=listing._id%>/edit">
+          <button type="submit" class="btn edit-btn">Edit</button>             
+        </form> 
+      </div>
+      <div class="dlt-btn">
+        <form method="POST" action="/listings/<%=listing._id%>?_method=DELETE">
+          <button type="submit" class="btn btn-dark btn-block">Delete</button> 
+        </form> 
+      </div>
     </div>
-    <%}%>
+    <% } %>
     <div class="col-8 offset-3 mb-3">
       <hr>
-      <%if(currUser){%>
+      <% if (currUser) { %>
       <h4>Leave a Review</h4>
       <form action="/listings/<%=listing.id%>/reviews" method="POST" novalidate class="needs-validation">
         <div class="mt-3 mb-3">
@@ -140,7 +152,7 @@
         <button class="btn btn-outline-dark">Submit</button>
       </form>
       <hr>
-      <%}%>
+      <% } %>
       
       <div class="row">
         <p><b>All Reviews</b></p>

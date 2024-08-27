@@ -62,6 +62,28 @@
 .nav-link:hover i.fas.fa-heart {
     color: darkred;
 }
+.wishlist-link {
+        display: flex;
+        align-items: center;
+        text-decoration: none; /* Remove underline */
+        color: #fe424d; /* Custom color */
+        font-size: 1.1rem; /* Slightly larger font */
+        font-weight: bold; /* Bold text */
+        padding: 10px; /* Padding for better spacing */
+        border-radius: 5px; /* Rounded corners */
+        transition: background-color 0.3s, color 0.3s; /* Smooth transition */
+      }
+
+      .wishlist-link :hover i.fas.fa-heart {
+        color: #fe424d; /* Background color on hover */
+        text-decoration: none; /* Ensure no underline on hover */
+      }
+
+      .wishlist-link i {
+        margin-left: 8px; /* Space between text and icon */
+        font-size: 1.3rem; /* Slightly larger icon */
+      }
+
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
@@ -71,6 +93,14 @@
     margin-top:1rem; /* Add margin for spacing */
     text-align: center; /* Center the text on mobile */
     width: 100%; /* Make the button full-width on small screens */
+  }
+  .navbar-nav{
+    margin-left:1rem !important;
+    margin-right:1rem !important;
+  }
+  .search-btn{
+    margin-left:1rem !important;
+    margin-right:1rem !important;
   }
 }
 </style>
@@ -109,8 +139,8 @@
             <a class="nav-link" href="/login"><b>Login</b></a>
         <% } %>
         <% if(currUser) { %>
-          <a class="nav-link" href="/wishlist">
-            <i class="fas fa-heart"></i> Wishlist
+          <a class="nav-link wishlist-link" href="/wishlist">
+            Wishlist<i class="fas fa-heart"></i> 
         </a>
             <a class="nav-link" href="/logout"><b>Logout</b></a>
         <% } %>

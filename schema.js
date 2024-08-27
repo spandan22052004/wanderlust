@@ -25,7 +25,7 @@ module.exports.listingSchema = Joi.object({
       filter: Joi.string().valid(
         'Trending', 'Castles', 'Beach', 'Boats', 'Islands', 'Deserts', 'Arctic',
         'Urban', 'Forest', 'Cabins', 'Lakes', 'Spa', 'Hiking', 'Camping', 'Igloos',
-        'Luxury', 'Glamping'
+        'Luxury', 'Glamping' , 'Modern'
     ).required().messages({
         'any.only': 'Invalid filter selected',
         'string.empty': 'Filter is required'

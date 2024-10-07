@@ -36,73 +36,121 @@
     background-color: white;
     /* White background for the hamburger icon container */
   }
+
   /* Basic styling for the invite wanderers link */
-.invite-wanderers {
-  background-color: #fe424d; /* Background color for the button */
-  color: white !important; /* Text color */
-  padding: 0.5rem 1rem; /* Padding inside the button */
-  border-radius: 25px; /* Rounded corners */
-  font-weight: bold; /* Bold text */
-  text-align: center; /* Center the text */
-  transition: background-color 0.3s, color 0.3s; /* Smooth transition for hover effects */
-}
-
-/* Hover effect for the invite wanderers link */
-.invite-wanderers:hover {
-  background-color: #d43f4c; /* Darker background on hover */
-  color: #fff; /* Ensure text color remains white on hover */
-}
-
-.nav-link i.fas.fa-heart {
-    color: red;
-    font-size: 1.5em;
-    margin-right: 5px;
-}
-
-.nav-link:hover i.fas.fa-heart {
-    color: darkred;
-}
-.wishlist-link {
-        display: flex;
-        align-items: center;
-        text-decoration: none; /* Remove underline */
-        color: #fe424d; /* Custom color */
-        font-size: 1.1rem; /* Slightly larger font */
-        font-weight: bold; /* Bold text */
-        padding: 10px; /* Padding for better spacing */
-        border-radius: 5px; /* Rounded corners */
-        transition: background-color 0.3s, color 0.3s; /* Smooth transition */
-      }
-
-      .wishlist-link :hover i.fas.fa-heart {
-        color: #fe424d; /* Background color on hover */
-        text-decoration: none; /* Ensure no underline on hover */
-      }
-
-      .wishlist-link i {
-        margin-left: 8px; /* Space between text and icon */
-        font-size: 1.3rem; /* Slightly larger icon */
-      }
-
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
   .invite-wanderers {
-    display: block; /* Ensure it displays well on smaller screens */
-    margin-bottom: 1rem;
-    margin-top:1rem; /* Add margin for spacing */
-    text-align: center; /* Center the text on mobile */
-    width: 100%; /* Make the button full-width on small screens */
+    background-color: #fe424d;
+    /* Background color for the button */
+    color: white !important;
+    /* Text color */
+    padding: 0.5rem 1rem;
+    /* Padding inside the button */
+    border-radius: 25px;
+    /* Rounded corners */
+    font-weight: bold;
+    /* Bold text */
+    text-align: center;
+    /* Center the text */
+    transition: background-color 0.3s, color 0.3s;
+    /* Smooth transition for hover effects */
   }
-  .navbar-nav{
-    margin-left:1rem !important;
-    margin-right:1rem !important;
+
+  /* Hover effect for the invite wanderers link */
+  .invite-wanderers:hover {
+    background-color: #d43f4c;
+    /* Darker background on hover */
+    color: #fff;
+    /* Ensure text color remains white on hover */
   }
-  .search-btn{
-    margin-left:1rem !important;
-    margin-right:1rem !important;
-  }
+
+/* Container for the wishlist link */
+.right-navbar {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  padding: 2px; /* Adjust padding if necessary */
+  margin-top: 1rem;
 }
+
+/* Styling for the heart icon */
+.nav-link i.fas.fa-heart {
+  color: #fe424d;
+  font-size: 1rem; /* Larger icon size */
+  margin-bottom: 2px; /* Space between icon and text */
+  opacity:0.3;
+}
+
+/* Change color on hover */
+.nav-link:hover i.fas.fa-heart {
+  color: red;
+  opacity:1;
+}
+
+/* Styling for the wishlist link */
+.wishlist-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none; /* Remove underline */
+  color: #0f0f0f; /* Custom color */
+  font-size: 1rem;
+  transition: background-color 0.3s, color 0.3s; /* Smooth transition */
+}
+
+
+/* Adjust icon size and spacing */
+.wishlist-link i {
+  margin-bottom: 2px; /* Space between icon and text */
+  font-size: 0.5rem; /* Larger icon size */
+}
+.logout{
+  margin-left:1rem;
+  margin-top:1.7rem;
+}
+
+  /* Responsive adjustments */
+@media (max-width: 768px) {
+    .invite-wanderers {
+      display: block;
+      /* Ensure it displays well on smaller screens */
+      margin-bottom: 1rem;
+      margin-top: 1rem;
+      /* Add margin for spacing */
+      text-align: center;
+      /* Center the text on mobile */
+      width: 100%;
+      /* Make the button full-width on small screens */
+    }
+
+    .navbar-nav {
+      margin-left: 1rem !important;
+      margin-right: 1rem !important;
+    }
+
+    .search-btn {
+      margin-left: 1rem !important;
+      margin-right: 1rem !important;
+    }
+    .wishlist-link {
+    flex-direction: row;
+    font-size: 1rem; /* Normal font size */
+    font-weight: normal;
+  }
+
+  .wishlist-link i {
+    display:none;
+  }
+
+  .right-navbar {
+    flex-direction: row;
+    align-items: flex-start !important; /* Align items horizontally */
+    /* padding: 2px;  */
+  }
+  .logout{
+    margin-left:0rem;
+    margin-top:0.3rem;
+  }
+  }
 </style>
 
 <nav class="navbar navbar-expand-md bg-body-light border-bottom sticky-top">
@@ -110,7 +158,7 @@
     <!-- Logo or brand image -->
     <a class="navbar-brand" href="/listings">
       <img src="/image/logo.png" alt="icon" style="width: 4rem; height:4rem;">
-    </a>  
+    </a>
 
     <!-- Hamburger menu button for small screens -->
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup">
@@ -127,24 +175,28 @@
       <!-- Search bar aligned to the right -->
       <div class="search-btn ms-auto">
         <form class="d-flex" role="search" action="/listings/search" method="get">
-          <input class="form-control me-2 search-input" id="search-query" name="q" type="search" placeholder="Search Destinations" aria-label="Search">
+          <input class="form-control me-2 search-input" id="search-query" name="q" type="search"
+            placeholder="Search Destinations" aria-label="Search">
           <button class="btn search_button" type="submit"><i class="fa-solid fa-magnifying-glass"></i>Search</button>
         </form>
-      </div>      
+      </div>
 
       <!-- User-related links aligned to the right -->
       <div class="navbar-nav ms-auto">
         <% if(!currUser) { %>
-            <a class="nav-link active" aria-current="page" href="/signup"><b>Signup</b></a>
-            <a class="nav-link" href="/login"><b>Login</b></a>
-        <% } %>
-        <% if(currUser) { %>
-          <a class="nav-link wishlist-link" href="/wishlist">
-            Wishlist<i class="fas fa-heart"></i> 
-        </a>
-            <a class="nav-link" href="/logout"><b>Logout</b></a>
-        <% } %>
-    </div>    
+          <a class="nav-link active" aria-current="page" href="/signup"><b>Signup</b></a>
+          <a class="nav-link" href="/login"><b>Login</b></a>
+          <% } %>
+            <% if(currUser) { %>
+              <div class="nav-link right-navbar">
+                <a class="wishlist-link" href="/wishlist">
+                  <i class="fas fa-heart"></i>
+                  <p><b>Wishlist</b></p>
+                </a>
+              </div>
+              <a class="nav-link logout" href="/logout"><b>Logout</b></a>
+              <% } %>
+      </div>
     </div>
   </div>
 </nav>

@@ -90,3 +90,28 @@ body{
     height:400px;
     width:100vh;
 }
+/* -------------------------------------------------------------------------- */
+/* Style the scrollbar track */
+/* Scrollbar container */
+::-webkit-scrollbar {
+    width: 12px; /* Width of the scrollbar */
+  }
+  
+  /* Scrollbar track (background) */
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Light grey background */
+    border-radius: 10px; /* Rounded corners */
+  }
+  
+  /* Scrollbar thumb (draggable part) */
+  ::-webkit-scrollbar-thumb {
+    background: #888; /* Darker grey for the thumb */
+    border-radius: 10px; /* Rounded corners */
+    transition: #888 0.3s ease; /* Smooth color transition */
+  }
+  
+  /* Scrollbar thumb on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Even darker grey on hover */
+  }
+    

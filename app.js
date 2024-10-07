@@ -62,6 +62,13 @@ app.get("/", (req, res) => {
     res.send("Hi, I am root");
 });  
 
+//Booking details
+app.get("/book/:id",async(req,res)=>{
+    let{id}=req.params;
+    let listing = await Listing.findById(id);
+    res.render("./listings/book.ejs",{listing});
+});
+
 
 app.use(session(sessionOptions));
 app.use(flash());

@@ -108,6 +108,13 @@
           <p class="card-text"><%=listing.location%>, <%=listing.country%></p>
         </div>
       </div>
+      <div class="col-6 offset-3">
+          <% if (listing.owner && currUser && listing.owner._id !== currUser._id) { %>
+            <form mathod="GET" action="/book/<%= listing._id %>">
+              <button type="submit" class="btn book-btn btn-primary">Book Now</button>
+            </form>
+          <%}%>
+      </div>
     </div>
     <% if (currUser && listing.owner._id.equals(currUser._id)) { %>
     <div class="btns col-8 offset-3"> 
@@ -123,6 +130,7 @@
       </div>
     </div>
     <% } %>
+    
     <div class="col-8 offset-3 mb-3">
       <hr>
       <% if (currUser) { %>

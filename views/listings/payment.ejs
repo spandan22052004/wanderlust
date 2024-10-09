@@ -1,0 +1,31 @@
+<% layout("./layouts/boilerplate") %>
+
+<head>
+    <style>
+        /* Custom CSS */
+        .payment-container {
+            max-width: 600px;
+            margin: auto;
+        }
+        .btn-pay {
+            background-color: #fe424d;
+            color: white;
+            border: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="payment-container mt-4">
+        <h3 class="text-center">Payment for Your Booking</h3>
+        <p><strong>Name:</strong> <%= booking.name %></p>
+        <p><strong>Email:</strong> <%= booking.email %></p>
+        <p><strong>Check-In Date:</strong> <%= booking.checkIn.toDateString() %></p>
+        <p><strong>Check-Out Date:</strong> <%= booking.checkOut.toDateString() %></p>
+        <p><strong>Total Price:</strong> $<%= booking.totalPrice %></p>
+        
+        <form method="POST" action="/process-payment/<%= booking._id %>">
+            <button type="submit" class="btn btn-pay w-100">Pay Now</button>
+        </form>
+    </div>
+</body>

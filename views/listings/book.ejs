@@ -20,7 +20,7 @@
         <div class="row justify-content-center">
             <div class="col-12 col-md-10 col-lg-8">
                 <h3 class="text-center mb-4">Book Your Stay</h3>
-                <form method="POST" action="/booking/<%= listing._id %>" novalidate class="needs-validation">
+                <form method="POST" action="/booking/<%= listing._id %>" novalidate class="needs-validation" id="bookingForm">
                     <div class="mb-3">
                         <label for="name" class="form-label">Full Name</label>
                         <input type="text" id="name" name="booking[name]" class="form-control" required>
@@ -45,13 +45,30 @@
                     <div class="mb-3">
                         <label for="checkOut" class="form-label">Check-Out Date</label>
                         <input type="date" id="checkOut" name="booking[checkOut]" class="form-control" required>
-                        <div class="invalid-feedback">
-                            Please select a check-out date.
+                        <div class="invalid-feedback" id="dateError">
+                            Please select a check-out date that is after the check-in date.
                         </div>
                     </div>
-                    <button class="btn btn-dark book-btn w-100">Submit Booking</button>
+                    <button type="submit" class="btn btn-dark book-btn w-100">Submit Booking</button>
                 </form>
             </div>
         </div>
     </div>
+
+    <script>
+        document.getElementById('bookingForm').addEventListener('submit', function(event) {
+            const checkIn = new Date(document.getElementById('checkIn').value);
+            const checkOut = new Date(document.getElementById('checkOut').value);
+
+            // Check if the check-in date is after or equal to the check-out date
+            if (checkIn >= checkOut) {
+                event.preventDefault();  // Stop the form from submitting
+                document.getElementById('dateError').style.display = 'block';  // Show the error message
+                document.getElementById('checkOut').classList.add('is-invalid');  // Add the Bootstrap invalid class
+            } else {
+                document.getElementById('dateError').style.display = 'none';  // Hide the error message
+                document.getElementById('checkOut').classList.remove('is-invalid');  // Remove the invalid class
+            }
+        });
+    </script>
 </body>

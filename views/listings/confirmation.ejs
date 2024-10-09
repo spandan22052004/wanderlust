@@ -1,0 +1,48 @@
+<% layout("./layouts/boilerplate") %>
+
+<head>
+    <style>
+        /* Custom CSS */
+        .confirmation-container {
+            max-width: 600px;
+            margin: auto;
+            text-align: center;
+            padding: 20px;
+            border: 1px solid #fe424d;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+        }
+        .success-icon {
+            font-size: 50px;
+            color: #28a745; /* Green color */
+        }
+        .btn-home {
+            background-color: #fe424d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        .btn-home:hover {
+            background-color: #e03e4d;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="confirmation-container mt-4">
+        <div class="success-icon">&#10004;</div> <!-- Checkmark icon -->
+        <h3>Booking Confirmation</h3>
+        <p>Thank you for your booking, <strong><%= booking.name %></strong>!</p>
+        <p>Your reservation has been successfully confirmed.</p>
+        <p><strong>Check-In Date:</strong> <%= booking.checkIn.toDateString() %></p>
+        <p><strong>Check-Out Date:</strong> <%= booking.checkOut.toDateString() %></p>
+        <p><strong>Total Price:</strong> $<%= booking.totalPrice %></p>
+
+        <p class="mt-4">We look forward to welcoming you!</p>
+
+        <a href="/" class="btn-home">Go to Home</a>
+    </div>
+</body>

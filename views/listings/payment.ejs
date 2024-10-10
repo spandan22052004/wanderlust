@@ -28,4 +28,38 @@
             <button type="submit" class="btn btn-pay w-100">Pay Now</button>
         </form>
     </div>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+    // Assuming you have `orderId` and `amountToPaise` set in your script
+    const options = {
+        key: "rzp_test_U30Mev7koOKsku", // Your Razorpay Key ID
+        amount:"<%= Math.round(booking.totalPrice * 100) %>", // Amount is in paise
+        currency: "INR",
+        name: "Wanderlust",
+        description: "Booking for Your Listing",
+        order_id: "<%= booking._id %>", // Use the booking ID
+        handler: function (response) {
+            // Handle successful payment
+            console.log(response);
+            // Optionally redirect to a confirmation page
+            window.location.href = `/confirmation/${response.razorpay_order_id}`;
+        },
+        prefill: {
+            name: "<%= booking.name %>",
+            email: "<%= booking.email %>",
+        },
+        theme: {
+            color: "#F37254"
+        }
+    };
+
+    const rzp1 = new Razorpay(options);
+
+    // Trigger the Razorpay checkout on form submission
+    document.querySelector("form").onsubmit = function (e) {
+        e.preventDefault(); // Prevent the default form submission
+        rzp1.open(); // Open Razorpay checkout
+    };
+</script>
 </body>

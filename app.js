@@ -191,7 +191,14 @@ app.post("/process-payment/:id", async (req, res) => {
 
     try {
         // Find the booking and populate necessary fields
-        const booking = await Booking.findById(id).populate("listing user");
+        // Populate the listing and its owner when fetching the booking
+        const booking = await Booking.findById(id).populate({
+            path: 'listing',
+            populate: {
+                path: 'owner', // Ensure that the 'owner' field of the listing is populated
+                model: 'User', // Assuming the owner is a user in your 'User' model
+            }
+        });
         if (!booking) {
             req.flash("error", "Booking not found.");
             return res.redirect(`/payment/${id}`);

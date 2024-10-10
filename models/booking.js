@@ -36,8 +36,24 @@ const bookingSchema = new Schema({
     ref: "User",
     required: true,
   },
+  // Razorpay order ID
+  razorpay_order_id: {
+    type: String,
+    default: null,
+  },
+  // Payment status
+  paymentStatus: {
+    type: String,
+    enum: ["pending", "paid", "failed"],
+    default: "pending",
+  },
+  // Store the payment failure reason if any
+  paymentFailureReason: {
+    type: String,
+    default: null,
+  },
 }, {
-  timestamps: true // This will automatically add `createdAt` and `updatedAt` fields
+  timestamps: true // Automatically adds `createdAt` and `updatedAt`
 });
 
 // Pre-save middleware to validate check-in and check-out dates

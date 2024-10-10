@@ -6,6 +6,7 @@ console.log(process.env.SECRET);
 
 const express = require("express");
 const mongoose = require("mongoose");
+const crypto = require('crypto');
 const Listing = require("./models/listings.js");
 const Booking = require("./models/booking.js");
 const path = require("path");
@@ -175,11 +176,11 @@ app.get("/payment/:id", async (req, res) => {
         }
 
         // Render your payment page here, passing the booking details
-        res.render("./listings/payment.ejs", { booking });
+        res.render("./listings/payment.ejs", {booking});
     } catch (error) {
         console.log(error);
         req.flash("error", "Could not retrieve booking details for payment.");
-        res.redirect("/");
+        res.redirect("./listings");
     }
 });
 
@@ -216,6 +217,7 @@ app.post("/process-payment/:id", async (req, res) => {
 
         // Create an order using Razorpay API
         const order = await razorpay.orders.create(options);
+        booking.razorpay_order_id = order.id;
         // Assuming the payment was successful
         req.flash("success", "Payment successful! Thank you for your booking.");
         // Send confirmation emails to both the user and the listing owner
@@ -225,7 +227,7 @@ app.post("/process-payment/:id", async (req, res) => {
             from: process.env.EMAIL_USER,
             to: booking.email, // User's email
             subject: "Booking Confirmation",
-            text: `Dear ${booking.name},\n\nYour booking for the listing "${booking.listing.title}" has been confirmed! Your check-in date is ${booking.checkIn} and check-out date is ${booking.checkOut}. The total amount charged is ₹${booking.totalPrice}.\n\nThank you for booking with us!\nBest regards, Your Team`
+            text: `Dear ${booking.name},\n\nYour booking for the listing "${booking.listing.title}" has been confirmed! Your check-in date is ${booking.checkIn} and check-out date is ${booking.checkOut}. The total amount charged is ₹${booking.totalPrice}.\n\nThank you for booking with us!\nBest regards,\n@Wanderlust`
         };
 
         // 2. Email to the listing owner
@@ -233,7 +235,7 @@ app.post("/process-payment/:id", async (req, res) => {
             from: process.env.EMAIL_USER,
             to: booking.listing.owner.email, // Owner's email
             subject: "New Booking for Your Listing",
-            text: `Dear ${booking.listing.owner.name},\n\nYour listing "${booking.listing.title}" has been booked by ${booking.name}. The check-in date is ${booking.checkIn} and check-out date is ${booking.checkOut}. The total price is ₹${booking.totalPrice}.\n\nThank you for hosting with us!\nBest regards, Your Team`
+            text: `Dear Owner,\n\nYour listing "${booking.listing.title}" has been booked by ${booking.name}. The check-in date is ${booking.checkIn} and check-out date is ${booking.checkOut}. The total price is ₹${booking.totalPrice}.\n\nThank you for hosting with us!\nBest regards,\n@Wanderlust`
         };
 
         // Send both emails asynchronously
@@ -246,6 +248,45 @@ app.post("/process-payment/:id", async (req, res) => {
         console.log(error);
         req.flash("error", "Payment failed. Please try again.");
         res.redirect(`/payment/${id}`);
+    }
+});
+
+app.post("/verify-payment/:id", async (req, res) => {
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+    const { id } = req.params;
+
+    // Fetch the Razorpay secret key from environment variables
+    const secret = process.env.RAZORPAY_SECRET; // Replace with your Razorpay secret key
+
+    // Generate the signature for verification
+    const generatedSignature = crypto
+        .createHmac('sha256', secret)
+        .update(`${razorpay_order_id}|${razorpay_payment_id}`)
+        .digest('hex');
+
+    // Check if the generated signature matches the received signature
+    if (generatedSignature === razorpay_signature) {
+        // The payment is verified
+        try {
+            // Find the booking and update its payment status
+            const booking = await Booking.findById(id);
+            if (booking) {
+                booking.paymentStatus = 'confirmed'; // Update booking status
+                await booking.save();
+            }
+
+            // Optional: Send confirmation emails (as in your existing logic)
+
+            // Send success response
+            res.status(200).json({ message: "Payment verification successful." });
+        } catch (error) {
+            console.error('Error updating booking:', error);
+            res.status(500).json({ message: "Internal server error." });
+        }
+    } else {
+        // The payment verification failed
+        console.log("Payment verification failed!");
+        res.status(400).json({ message: "Payment verification failed." });
     }
 });
 

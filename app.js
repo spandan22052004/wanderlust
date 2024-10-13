@@ -185,110 +185,65 @@ app.get("/payment/:id", async (req, res) => {
 });
 
 app.post("/process-payment/:id", async (req, res) => {
-    const { id } = req.params;
-
-    // Here, implement the payment processing logic (e.g., with a payment gateway)
-    // After successful payment, update the booking status, send a confirmation email, etc.
-
     try {
-        // Find the booking and populate necessary fields
-        // Populate the listing and its owner when fetching the booking
-        const booking = await Booking.findById(id).populate({
-            path: 'listing',
-            populate: {
-                path: 'owner', // Ensure that the 'owner' field of the listing is populated
-                model: 'User', // Assuming the owner is a user in your 'User' model
-            }
-        });
+        const booking = await Booking.findById(req.params.id);
         if (!booking) {
             req.flash("error", "Booking not found.");
-            return res.redirect(`/payment/${id}`);
+            return res.redirect(`/payment/${req.params.id}`);
         }
-        // Amount in paise(razorpay accepts round off payments)
-        const amountToPaise = Math.round(booking.totalPrice * 100 * 85);
 
-        // Prepare Razorpay order creation payload
+        const amountInPaise = Math.round(booking.totalPrice * 100); // Amount in paise
+
         const options = {
-            amount: amountToPaise , 
+            amount: amountInPaise,
             currency: "INR",
-            receipt: `receipt_${id}`,
-            payment_capture: 1
+            receipt: `receipt_order_${booking._id}`,
         };
 
-        // Create an order using Razorpay API
+        // Create Razorpay order
         const order = await razorpay.orders.create(options);
+
+        // Save the order ID to the booking
         booking.razorpay_order_id = order.id;
-        // Assuming the payment was successful
-        req.flash("success", "Payment successful! Thank you for your booking.");
-        // Send confirmation emails to both the user and the listing owner
+        await booking.save();
 
-        // 1. Email to the user
-        const userMailOptions = {
-            from: process.env.EMAIL_USER,
-            to: booking.email, // User's email
-            subject: "Booking Confirmation",
-            text: `Dear ${booking.name},\n\nYour booking for the listing "${booking.listing.title}" has been confirmed! Your check-in date is ${booking.checkIn} and check-out date is ${booking.checkOut}. The total amount charged is ₹${booking.totalPrice}.\n\nThank you for booking with us!\nBest regards,\n@Wanderlust`
-        };
-
-        // 2. Email to the listing owner
-        const ownerMailOptions = {
-            from: process.env.EMAIL_USER,
-            to: booking.listing.owner.email, // Owner's email
-            subject: "New Booking for Your Listing",
-            text: `Dear Owner,\n\nYour listing "${booking.listing.title}" has been booked by ${booking.name}. The check-in date is ${booking.checkIn} and check-out date is ${booking.checkOut}. The total price is ₹${booking.totalPrice}.\n\nThank you for hosting with us!\nBest regards,\n@Wanderlust`
-        };
-
-        // Send both emails asynchronously
-        await transporter.sendMail(userMailOptions);
-        await transporter.sendMail(ownerMailOptions);
-
-        // Redirect to confirmation page
-        res.redirect(`/confirmation/${id}`); // Redirect to a confirmation page
+        res.render("./listings/payment.ejs", { booking });
     } catch (error) {
-        console.log(error);
-        req.flash("error", "Payment failed. Please try again.");
-        res.redirect(`/payment/${id}`);
+        console.error("Error processing payment:", error);
+        req.flash("error", "Failed to create payment order.");
+        res.redirect(`/payment/${req.params.id}`);
     }
 });
 
 app.post("/verify-payment/:id", async (req, res) => {
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
     const { id } = req.params;
-
-    // Fetch the Razorpay secret key from environment variables
-    const secret = process.env.RAZORPAY_SECRET; // Replace with your Razorpay secret key
-
-    // Generate the signature for verification
+  
+    const secret = process.env.RAZORPAY_KEY_SECRET;
+  
     const generatedSignature = crypto
-        .createHmac('sha256', secret)
-        .update(`${razorpay_order_id}|${razorpay_payment_id}`)
-        .digest('hex');
-
-    // Check if the generated signature matches the received signature
+      .createHmac('sha256', secret)
+      .update(`${razorpay_order_id}|${razorpay_payment_id}`)
+      .digest('hex');
+  
     if (generatedSignature === razorpay_signature) {
-        // The payment is verified
-        try {
-            // Find the booking and update its payment status
-            const booking = await Booking.findById(id);
-            if (booking) {
-                booking.paymentStatus = 'confirmed'; // Update booking status
-                await booking.save();
-            }
-
-            // Optional: Send confirmation emails (as in your existing logic)
-
-            // Send success response
-            res.status(200).json({ message: "Payment verification successful." });
-        } catch (error) {
-            console.error('Error updating booking:', error);
-            res.status(500).json({ message: "Internal server error." });
+      try {
+        const booking = await Booking.findById(id);
+        if (booking) {
+          booking.paymentStatus = 'confirmed';
+          await booking.save();
         }
+        res.status(200).json({ message: "Payment verification successful." });
+      } catch (error) {
+        console.error('Error updating booking:', error);
+        res.status(500).json({ message: "Internal server error." });
+      }
     } else {
-        // The payment verification failed
-        console.log("Payment verification failed!");
-        res.status(400).json({ message: "Payment verification failed." });
+      console.log("Payment verification failed!");
+      res.status(400).json({ message: "Payment verification failed." });
     }
-});
+  });
+  
 
 app.get("/confirmation/:id", async (req, res) => {
     try {

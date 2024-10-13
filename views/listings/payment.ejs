@@ -1,88 +1,95 @@
 <% layout("./layouts/boilerplate") %>
 
-<head>
-    <style>
-        /* Custom CSS */
-        .payment-container {
-            max-width: 600px;
-            margin: auto;
-        }
-        .btn-pay {
-            background-color: #fe424d;
-            color: white;
-            border: none;
-        }
-    </style>
-</head>
-
-<body>
-    <div class="payment-container mt-4">
-        <h3 class="text-center">Payment for Your Booking</h3>
-        <p><strong>Name:</strong> <%= booking.name %></p>
-        <p><strong>Email:</strong> <%= booking.email %></p>
-        <p><strong>Check-In Date:</strong> <%= booking.checkIn.toDateString() %></p>
-        <p><strong>Check-Out Date:</strong> <%= booking.checkOut.toDateString() %></p>
-        <p><strong>Total Price:</strong> $<%= booking.totalPrice %></p>
-        
-        <form method="POST" action="/process-payment/<%= booking._id %>">
-            <button type="submit" class="btn btn-pay w-100">Pay Now</button>
-        </form>
-    </div>
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
-    <script>
-        const options = {
-            key: "rzp_test_U30Mev7koOKsku", // Your Razorpay Key ID
-            amount: "<%= Math.round(booking.totalPrice * 100 * 85) %>", // Amount in paise
-            currency: "INR",
-            name: "Wanderlust",
-            description: "Booking for Your Listing",
-            order_id: "<%= booking.razorpay_order_id %>", // Use the order ID returned from the server
-            handler: function (response) {
-                // Payment was successful, send details to the server
-                const paymentData = {
-                    razorpay_order_id: response.razorpay_order_id,
-                    razorpay_payment_id: response.razorpay_payment_id,
-                    razorpay_signature: response.razorpay_signature
-                };
-    
-                // Make a POST request to the server with the payment data
-                fetch(`/verify-payment/<%= booking._id %>`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(paymentData)
-                })
-                .then(res => {
-                    if (res.ok) {
-                        window.location.href = `/confirmation/<%= booking._id %>`; // Redirect to confirmation page
-                    } else {
-                        // Handle error
-                        alert("Payment verification failed. Please try again.");
-                    }
-                })
-                .catch(err => {
-                    console.error('Error:', err);
-                    alert("An error occurred while processing your payment. Please try again.");
-                });
-            },
-            prefill: {
-                name: "<%= booking.name %>",
-                email: "<%= booking.email %>",
-            },
-            theme: {
-                color: "#F37254"
+    <head>
+        <style>
+            /* Custom CSS */
+            .payment-container {
+                max-width: 600px;
+                margin: auto;
             }
-        };
-    
-        const rzp1 = new Razorpay(options);
-    
-        // Trigger the Razorpay checkout on form submission
-        document.querySelector("form").onsubmit = function (e) {
-            e.preventDefault(); // Prevent the default form submission
-            rzp1.open(); // Open Razorpay checkout
-        };
-    </script>
-    
-</body>
+
+            .btn-pay {
+                background-color: #fe424d;
+                color: white;
+                border: none;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="payment-container mt-4">
+            <h3 class="text-center">Payment for Your Booking</h3>
+            <p><strong>Name:</strong>
+                <%= booking.name %>
+            </p>
+            <p><strong>Email:</strong>
+                <%= booking.email %>
+            </p>
+            <p><strong>Check-In Date:</strong>
+                <%= booking.checkIn.toDateString() %>
+            </p>
+            <p><strong>Check-Out Date:</strong>
+                <%= booking.checkOut.toDateString() %>
+            </p>
+            <p><strong>Total Price:</strong> ₹<%= booking.totalPrice %>
+            </p>
+
+            <button id="rzp-button" class="btn btn-pay w-100">Pay Now</button>
+        </div>
+
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+        <script>
+            const options = {
+                key: "<%= process.env.RAZORPAY_KEY_ID %>", // Your Razorpay Key ID
+                amount: "<%= Math.round(booking.totalPrice * 100) %>", // Amount in paise
+                currency: "INR",
+                name: "Wanderlust",
+                description: "Booking for Your Listing",
+                order_id: "<%= booking.razorpay_order_id %>", // Razorpay order ID
+                handler: function (response) {
+                    const paymentData = {
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        razorpay_signature: response.razorpay_signature,
+                    };
+
+                    fetch(`/verify-payment/<%= booking._id %>`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: new URLSearchParams({
+                            razorpay_order_id: '<order_id>',
+                            razorpay_payment_id: '<payment_id>',
+                            razorpay_signature: '<signature>',
+                        }),
+                    })
+                        .then(res => {
+                            if (res.ok) {
+                                window.location.href = `/confirmation/<%= booking._id %>`;
+                            } else {
+                                alert("Payment verification failed. Please try again.");
+                            }
+                        })
+                        .catch(err => {
+                            console.error("Error:", err);
+                            alert("An error occurred. Please try again.");
+                        });
+                },
+                prefill: {
+                    name: "<%= booking.name %>",
+                    email: "<%= booking.email %>",
+                },
+                theme: {
+                    color: "#F37254",
+                },
+            };
+
+            const rzp = new Razorpay(options);
+            document.getElementById("rzp-button").onclick = function (e) {
+                e.preventDefault();
+                rzp.open();
+            };
+        </script>
+    </body>

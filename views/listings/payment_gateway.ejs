@@ -1,0 +1,50 @@
+<% layout("./layouts/boilerplate") %>
+
+<body>
+    <div class="payment-container mt-4">
+        <h3>Complete Your Payment</h3>
+        <button id="rzp-button" class="btn-pay">Pay Now</button>
+    </div>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        const options = {
+            key: "<%= process.env.RAZORPAY_KEY_ID %>",
+            amount: "<%= booking.totalPrice * 100 %>", // Amount in paise
+            currency: "INR",
+            name: "Wanderlust",
+            description: "Booking Payment",
+            order_id: "<%= order_id %>", // Order ID from backend
+            handler: function (response) {
+                fetch(`/verify_payment`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        razorpay_signature: response.razorpay_signature,
+                    }),
+                })
+                .then((res) => {
+                    if (res.ok) {
+                        window.location.href = `/confirmation/<%= booking._id %>`;
+                    } else {
+                        alert("Payment Verification Failed!");
+                    }
+                })
+                .catch((err) => console.error("Error:", err));
+            },
+            prefill: {
+                name: "<%= booking.name %>",
+                email: "<%= booking.email %>",
+            },
+            theme: { color: "#F37254" },
+        };
+
+        const rzp = new Razorpay(options);
+        document.getElementById('rzp-button').onclick = function (e) {
+            e.preventDefault();
+            rzp.open();
+        };
+    </script>
+</body>

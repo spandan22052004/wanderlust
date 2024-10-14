@@ -34,6 +34,7 @@ const app = express();
 const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 app.engine("ejs", ejsMate);
@@ -75,6 +76,7 @@ const transporter = nodemailer.createTransport({
         pass: process.env.EMAIL_PASS
     }
 });
+
 
 //Root route.....(0)
 app.get("/", (req, res) => {
@@ -144,7 +146,7 @@ app.post("/booking/:id", async (req, res) => {
 
         const listing = await Listing.findById(req.params.id);
         const nights = (new Date(req.body.booking.checkOut) - new Date(req.body.booking.checkIn)) / (1000 * 60 * 60 * 24);
-        const totalPrice = (listing.price * 0.18999999) + listing.price * nights; // Total price calculation
+        const totalPrice = (listing.price * 0.18) + listing.price * nights; // Total price calculation
 
         const booking = new Booking({
             name: req.body.booking.name,
@@ -184,80 +186,98 @@ app.get("/payment/:id", async (req, res) => {
     }
 });
 
-app.post("/process-payment/:id", async (req, res) => {
+app.post('/process_payment', async (req, res) => {
+    const { bookingId } = req.body;
+
+    const booking = await Booking.findById(bookingId); // Fetch booking data from DB
+    const orderOptions = {
+        amount: booking.totalPrice * 100, // Convert to paise
+        currency: "INR",
+        receipt: `receipt_${bookingId}`,
+    };
+
     try {
-        const booking = await Booking.findById(req.params.id);
-        if (!booking) {
-            req.flash("error", "Booking not found.");
-            return res.redirect(`/payment/${req.params.id}`);
-        }
-
-        const amountInPaise = Math.round(booking.totalPrice * 100); // Amount in paise
-
-        const options = {
-            amount: amountInPaise,
-            currency: "INR",
-            receipt: `receipt_order_${booking._id}`,
-        };
-
-        // Create Razorpay order
-        const order = await razorpay.orders.create(options);
-
-        // Save the order ID to the booking
-        booking.razorpay_order_id = order.id;
-        await booking.save();
-
-        res.render("./listings/payment.ejs", { booking });
+        const order = await razorpay.orders.create(orderOptions); // Generate order ID
+        res.render('./listings/payment_gateway.ejs', { booking, order_id: order.id }); // Render payment page
     } catch (error) {
-        console.error("Error processing payment:", error);
-        req.flash("error", "Failed to create payment order.");
-        res.redirect(`/payment/${req.params.id}`);
+        console.error('Order creation failed:', error);
+        res.status(500).send('Error processing payment');
     }
 });
 
-app.post("/verify-payment/:id", async (req, res) => {
+
+app.post('/verify_payment',async(req, res) => {
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
-    const { id } = req.params;
-  
-    const secret = process.env.RAZORPAY_KEY_SECRET;
-  
-    const generatedSignature = crypto
-      .createHmac('sha256', secret)
-      .update(`${razorpay_order_id}|${razorpay_payment_id}`)
-      .digest('hex');
-  
-    if (generatedSignature === razorpay_signature) {
-      try {
-        const booking = await Booking.findById(id);
-        if (booking) {
-          booking.paymentStatus = 'confirmed';
-          await booking.save();
-        }
-        res.status(200).json({ message: "Payment verification successful." });
-      } catch (error) {
-        console.error('Error updating booking:', error);
-        res.status(500).json({ message: "Internal server error." });
-      }
+    // Concatenate order_id and payment_id with "|"
+    const body = razorpay_order_id + "|" + razorpay_payment_id;
+
+    // Generate the expected signature using HMAC SHA256
+    const expectedSignature = crypto
+        .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
+        .update(body.toString())
+        .digest('hex');
+
+    // Debugging: Log the generated and received signatures
+    console.log("Expected Signature:", expectedSignature);
+    console.log("Received Signature:", razorpay_signature);
+
+    if (expectedSignature === razorpay_signature) {
+        req.flash("success","Payment Successfull");
+        return res.status(200).send("Payment verified successfully!");
     } else {
-      console.log("Payment verification failed!");
-      res.status(400).json({ message: "Payment verification failed." });
+        return res.status(400).send("Payment verification failed.");
     }
-  });
+});
+
+
   
 
 app.get("/confirmation/:id", async (req, res) => {
+    const { id } = req.params;
     try {
-        const booking = await Booking.findById(req.params.id).populate('listing');
-        if (!booking) {
-            return res.status(404).send("Booking not found");
+        // Validate the ID format
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            req.flash("error", "Invalid booking ID.");
+            return res.redirect("/listings");
         }
 
+        const booking = await Booking.findById(id).populate({
+            path: 'listing',
+            populate: {
+                path: 'owner', // Ensure that the 'owner' field of the listing is populated
+                model: 'User', // Assuming the owner is a user in your 'User' model
+            }
+        });
+        if (!booking) {
+            req.flash("error", "Booking not found.");
+            return res.redirect("/listings");
+        }
+
+        const userMailOptions = {
+            from: process.env.EMAIL_USER,
+            to: booking.email, // User's email
+            subject: "Booking Confirmation",
+            text: `Dear ${booking.name},\n\nYour booking for the listing "${booking.listing.title}" has been confirmed! Your check-in date is ${booking.checkIn} and check-out date is ${booking.checkOut}. The total amount charged is ₹${booking.totalPrice}.\n\nThank you for booking with us!\nBest regards\n@Wanderlust`
+        };
+
+        // Email to the listing owner
+        const ownerMailOptions = {
+            from: process.env.EMAIL_USER,
+            to: booking.listing.owner.email, // Owner's email
+            subject: "New Booking for Your Listing",
+            text: `Dear ${booking.listing.owner.username},\n\nYour listing "${booking.listing.title}" has been booked by ${booking.name}. The check-in date is ${booking.checkIn} and check-out date is ${booking.checkOut}. The total price is ₹${booking.totalPrice}.\n\nThank you for hosting with us!\nBest regards\n@Wanderlust`
+        };
+
+        // Send both emails asynchronously
+        await transporter.sendMail(userMailOptions);
+        await transporter.sendMail(ownerMailOptions);
+        
         // Render the confirmation page with booking details
         res.render("./listings/confirmation.ejs", { booking });
     } catch (error) {
-        console.log(error);
+        console.error("Error occurred:", error);
         req.flash("error", "Could not retrieve booking details.");
-        res.redirect("/");
+        res.redirect("/listings");
     }
 });
 

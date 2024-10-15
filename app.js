@@ -91,8 +91,8 @@ const transporter = nodemailer.createTransport({
 
 
 //Root route.....(0)
-app.get("/", (req, res) => {
-    res.send("Hi, I am root");
+app.get("/", async(req, res) => {
+    res.redirect("/listings");
 });
 
 //Booking details

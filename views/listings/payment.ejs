@@ -2,19 +2,121 @@
 
 <head>
     <style>
+        /* Root Variables for Color Palette and Typography */
+        :root {
+            --primary-color: #fe424d;
+            --secondary-color: #ff7373;
+            --background-color: #f8f9fa;
+            --text-color-dark: #333;
+            --text-color-light: #777;
+            --font-family: 'Roboto', sans-serif;
+        }
+
+        /* Global Reset and Box-Sizing */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--background-color);
+            color: var(--text-color-dark);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        /* Styling the Payment Container */
         .payment-container {
             max-width: 600px;
-            margin: auto;
+            margin: 80px auto;
             text-align: center;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            padding: 50px 40px;
+            transition: all 0.4s ease;
+        }
+
+        .payment-container h3 {
+            font-size: 30px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            color: var(--text-color-dark);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+        }
+
+        .payment-container p {
+            font-size: 18px;
+            color: var(--text-color-light);
+            margin-bottom: 15px;
+        }
+
+        .payment-container p strong {
+            color: var(--text-color-dark);
+            font-weight: 600;
         }
 
         .btn-pay {
-            background-color: #fe424d;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
             color: white;
             border: none;
-            padding: 10px 20px;
-            font-size: 16px;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 50px;
             cursor: pointer;
+            box-shadow: 0 8px 20px rgba(254, 66, 77, 0.4);
+            transition: transform 0.3s ease, background 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .btn-pay:hover {
+            background: linear-gradient(90deg, var(--secondary-color), var(--primary-color));
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(254, 66, 77, 0.5);
+        }
+
+        .btn-pay:active {
+            transform: translateY(1px);
+            box-shadow: 0 5px 15px rgba(254, 66, 77, 0.2);
+        }
+
+        /* Accessibility: Focus State for Button */
+        .btn-pay:focus {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 4px;
+        }
+
+        /* Fade-in Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .payment-container {
+            animation: fadeIn 1.2s ease;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .payment-container {
+                padding: 40px 20px;
+                margin: 40px auto;
+            }
+
+            .btn-pay {
+                width: 100%;
+                padding: 12px 0;
+            }
         }
     </style>
 </head>

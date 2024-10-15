@@ -1,7 +1,8 @@
 <% layout("./layouts/boilerplate") %>
   <script>
     const mapToken = "<%=process.env.MAP_TOKEN%>";
-    const coordinate = <% -JSON.stringify(listing.geometry.coordinates) %>;
+    console.log(mapToken);
+    let coordinate = <%- JSON.stringify(listing.geometry.coordinates) %>;
   </script>
 
   <head>
@@ -222,3 +223,5 @@
     </div>
   </body>
   <script src="/js/map.js"></script>
+message.txt
+8 KB

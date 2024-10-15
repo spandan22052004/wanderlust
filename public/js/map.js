@@ -1,4 +1,7 @@
-mapboxgl.accessToken = process.env.MAP_TOKEN;
+if(coordinate.length==0){
+    coordinate=[77.1025,28.7041];
+}
+mapboxgl.accessToken = mapToken;
     const map = new mapboxgl.Map({
         container: 'map', // container ID
         center: coordinate, // starting position [lng, lat]. Note that lat must be set between -90 and 90

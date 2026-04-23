@@ -1,6 +1,6 @@
-if (process.env.NODE_ENV != "production") {
-    require('dotenv').config();
-}
+
+require('dotenv').config();
+
 
 
 const express = require("express");
@@ -42,7 +42,7 @@ app.use(express.static(path.join(__dirname, "/public")));
 app.use(express.static("/public"));
 
 main().then(() => {
-    console.log("Connected with DB");
+    console.log("Connected the server with DB");
 }).catch((err) => {
     console.error("Error connecting to database:", err);
 });
@@ -68,8 +68,8 @@ const sessionOptions = {
     resave: false,
     saveUninitialized: true,
     cookie: {
-        expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
-        maxAge: 7 * 24 * 60 * 60 * 1000,
+        expires: Date.now() + 5 * 24 * 60 * 60 * 1000,
+        maxAge: 5 * 24 * 60 * 60 * 1000,
         httpOnly: true,
     }
 }

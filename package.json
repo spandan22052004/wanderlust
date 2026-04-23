@@ -1,10 +1,9 @@
 {
-  "engines":{
+  "engines": {
     "node": "20.11.1"
   },
   "name": "majorproject",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -33,5 +32,14 @@
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^8.0.0",
     "razorpay": "^2.9.4"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/spandan22052004/wanderlust.git"
+  },
+  "bugs": {
+    "url": "https://github.com/spandan22052004/wanderlust/issues"
+  },
+  "homepage": "https://github.com/spandan22052004/wanderlust#readme",
+  "description": ""
 }
